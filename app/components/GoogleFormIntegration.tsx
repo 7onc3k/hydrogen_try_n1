@@ -17,6 +17,7 @@ interface GoogleFormIntegrationProps {
 }
 
 export const GoogleFormIntegration: React.FC<GoogleFormIntegrationProps> = ({ config, isEnabled }) => {
+  // State pro ukládání polí formuláře a dat formuláře
   const [fields, setFields] = useState<Record<string, FieldConfig>>({});
   const [formData, setFormData] = useState<Record<string, string>>({});
 
@@ -67,21 +68,41 @@ export const GoogleFormIntegration: React.FC<GoogleFormIntegrationProps> = ({ co
 
   if (!isEnabled) return null;
 
+  const fullScreenStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+    ...config.styles
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={config.styles}>
-      {Object.entries(fields).map(([key, field]) => (
-        <div key={key}>
-          <label htmlFor={key}>{field.label}</label>
-          <input
-            type={field.type}
-            id={key}
-            name={key}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-      ))}
-      <button type="submit">Submit</button>
-    </form>
+    <div style={fullScreenStyle}>
+      <form onSubmit={handleSubmit} style={{ width: '80%', maxWidth: '600px' }}>
+        {Object.entries(fields).map(([key, field]) => (
+          <div key={key} style={{ marginBottom: '15px' }}>
+            <label htmlFor={key} style={{ display: 'block', marginBottom: '5px' }}>{field.label}</label>
+            <input
+              type={field.type}
+              id={key}
+              name={key}
+              onChange={handleInputChange}
+              required
+              style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+            />
+          </div>
+        ))}
+        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>
+          Submit
+        </button>
+      </form>
+    </div>
   );
 };

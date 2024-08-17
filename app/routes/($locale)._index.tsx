@@ -2,6 +2,8 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
+import type {FeaturedCollectionFragment, RecommendedProductsQuery} from 'storefrontapi.generated';
+import {GoogleFormIntegration} from '~/components/GoogleFormIntegration';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
@@ -59,22 +61,28 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   
+  // Konfigurace Google formuláře
   const formConfig = {
     formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSf0L3ksRzp3NNpaS4oLpEafkwBginDO57W4SQinudhxTYEERg/viewform?usp=pp_url&entry.1410803887=fdafad&entry.1684906164=fdafds&entry.934314220=Hranaté&entry.467936851=Černá&entry.585540967=3&entry.1664370766=asdfadsf&entry.2030643292=Ano',
     fieldOverrides: {
       'entry.1410803887': { label: 'Vlastní label pro Otázku 1' },
     },
     styles: {
-      maxWidth: '500px',
-      margin: '20px auto',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
     }
   };
 
+  // Zde můžete změnit hodnotu na false, pokud chcete formulář zakázat
+  const isGoogleFormEnabled = true;
+
   return (
     <div className="home">
-      <FeaturedCollection collection={data.featuredCollection} />
+      {/* Zobrazení Google formuláře přes celou stránku */}
+      <GoogleFormIntegration config={formConfig} isEnabled={isGoogleFormEnabled} />
+      
+      {/* Původní obsah stránky */}
+      {data.featuredCollection && <FeaturedCollection collection={data.featuredCollection} />}
       <RecommendedProducts products={data.recommendedProducts} />
-      <GoogleFormIntegration config={formConfig} isEnabled={true} />
     </div>
   );
 }
