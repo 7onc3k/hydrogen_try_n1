@@ -6,6 +6,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
+import { GoogleFormIntegration } from '~/components/GoogleFormIntegration';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -57,10 +58,23 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+  
+  const formConfig = {
+    formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSf0L3ksRzp3NNpaS4oLpEafkwBginDO57W4SQinudhxTYEERg/viewform?usp=pp_url&entry.1410803887=fdafad&entry.1684906164=fdafds&entry.934314220=Hranaté&entry.467936851=Černá&entry.585540967=3&entry.1664370766=asdfadsf&entry.2030643292=Ano',
+    fieldOverrides: {
+      'entry.1410803887': { label: 'Vlastní label pro Otázku 1' },
+    },
+    styles: {
+      maxWidth: '500px',
+      margin: '20px auto',
+    }
+  };
+
   return (
     <div className="home">
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
+      <GoogleFormIntegration config={formConfig} isEnabled={true} />
     </div>
   );
 }
